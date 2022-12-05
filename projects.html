@@ -26,6 +26,7 @@
 .style4 {color: #999999}
 -->
 html,body{height:100%};
+.ptitle{text-align: center;}
 </style>
 </head>
 <body class="is-preload">
@@ -43,10 +44,31 @@ html,body{height:100%};
     </style>
     </head>
     <body>
-    <h2 class="centered">Introduction</h2>
-    <p><b>Projected Federated Averaging</b> with heterogeneous differential privacy, named as PFA, is proposed to solve the problem of federated learning where clients have different privacy requirements.</p>
-
+    <div class="ptitle">
+    <h2 style="font-size: 1.5em;" class="centered">Projected Federated Averaging with Heterogeneous Differential Privacy</h2>
+    <div id="author1">Junxu Liu</div>
+    <div id="author2">Jian Lou</div>
+    <div id="author3">Li Xiong</div>
+    <div id="author4">Jinfei Liu</div>
+    <div id="author5">Xiaofeng Meng</div>
+    <p>Renmin University of China & Emory University</p>
+    <p>Code <a href="https://github.com/JunxuLiu/PFA">[Github]</a></p>
+    <p>Demo [Coming soon...]</p>
+    </div>
+    <div id="framework">
+    <h3 class="centered">Framework</h3>
     <img src="imgs/pfa/pfa_framework.jpg" style="margin-left: 200px;margin-top: 10px;" height="50%" width="50%"></img>
+    </div>
+    <div id="abstract">
+    <h3 class="centered">Abstract</h3>
+    <p>Cross-silo Federated Learning (FL) emerges as a promising framework for multiple institutions to collaboratively learn a joint model without directly sharing the data. In addition to high utility of the joint model, rigorous protection of the  sensitive data and communication efficiency are among the key design desiderata of a successful FL algorithm. Many existing efforts achieve rigorous privacy by ensuring differential privacy for the intermediate model parameters, however, they typically assume a uniform privacy parameter for all the sites. In practice, different institutions may have different privacy requirements due to  varying privacy policies or  preferences of the data subjects. </p>
+  
+    <p>In this paper, we focus on explicitly modeling and leveraging the heterogeneous privacy requirements of different institutions. We formalize it as the heterogeneous differentially private federated learning problem and study how to optimize utility for the joint model while minimizing communication cost. As differentially private perturbations inevitably affect the model utility, a natural idea is to make better use of information submitted by the institutions with higher privacy budgets (referred to as ``public'' clients, and the opposite are  ``private'' clients). </p>
+
+    <p>The challenge is how to use such information without biasing the global model. 
+    To this end, we propose the <b><u>P</u></b>rojected  <b><u>F</u></b>ederated <b><u>A</u></b>veraging with heterogeneous differential privacy, named as PFA, which extracts the top singular subspace of the model updates submitted by ``public" clients and then utilizes them to project the model updates of ``private" clients before aggregating them. We further propose the communication-efficient PFA+, which allows ``private" clients to upload projected parameters instead of original parameters using the projection space learned from the previous round. Our experiments on both statistical learning and deep learning verify the utility boost of both algorithms compared to the baseline methods, whereby PFA+ achieves over 99\% uplink communication reduction for ``private'' clients. Our implementation is publicly available.</p>
+    </div>
+    
 
     <div style="width:margin:10px;padding:0" class="Open Source">
       <h3 class="centered">Open Source</h3>
@@ -93,8 +115,8 @@ html,body{height:100%};
     </div>
 </section> -->
 <ul id="copyright">
-    <li class="title style1">Copyright &copy; 2008-2021 </li>
-    <li class="title style1"><a href="http://www.philippe-fournier-viger.com">Philippe Fournier-Viger</a></li>
+    <li class="title style1">Copyright &copy; 2022 </li>
+    <li class="title style1">Junxu Liu</li>
     <li class="title style1">All rights reserved.</li>
     <li class="title style1">Template by <a href="http://html5up.net" rel="nofollow">H</a></li>
   </ul>
