@@ -1,0 +1,680 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>差分隐私的前世今生：前世篇</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvgwidth%3D%2216%22height%3D%2216%22viewBox%3D%22001616%22fill%3D%22none%22xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crectwidth%3D%2216%22height%3D%2216%22fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpathd%3D%22M6.7142912.2852L144.9995L12.71433.71436L6.714299.71378L3.285716.2831L27.57092L6.7142912.2852Z%22fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvgwidth%3D%2216%22height%3D%2216%22viewBox%3D%22001616%22fill%3D%22none%22xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crectx%3D%220.75%22y%3D%220.75%22width%3D%2214.5%22height%3D%2214.5%22fill%3D%22white%22stroke%3D%22%2336352F%22stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="bc00ae9d-9f4c-462d-b2dc-4e982ff196c9" class="page sans"><header><h1 class="page-title">差分隐私的前世今生：前世篇</h1></header><div class="page-body"><p id="ce61b8b4-863f-46a4-95ec-d8f5a10c1f0d" class="">
+</p><p id="fb5f8781-bf21-4475-9d0f-be605073cace" class="">Dwork之所以能够提出DP，与她在密码学领域奠定的坚实研究基础息息相关。毕竟一项可留于史册的技术都不是拍脑袋想出来的——它们都是站在巨人的肩膀上。翻看密码学教材[1]，我们会发现很多概念与DP中的概念惊人地相似。比如，DP最初并不叫differential privacy，叫indistinguishability，即不可区分性。如果你有密码学背景，想必对这个术语并不会感到陌生。在密码学中，这个概念用来描述「perfect secrecy，绝对安全」，属于“<strong>可证明安全性（provable security）</strong>”研究范畴，本文便从这里开始讲起。</p><p id="b9ce6d49-88a9-4c20-a9cf-c1d1d2000a7e" class="">（这个系列的文章既是自己的理解和积累，也希望可以作为一个科普，可能需要一点DP背景，但也不多。如有错误，欢迎指正。）</p><h1 id="47881353-3be3-4969-a70d-05c11cb7ba85" class="">可证明安全性概述</h1><p id="615c0361-a70b-4186-b968-c4437b965ea9" class="">一个加密机制的安全性可分为三个等级[6]：「绝对安全 (<em>perfect security</em>)」，「计算安全 (<em>computationally security</em>)」以及「可证明安全 (<em>provable security</em>)」。</p><ul id="58af7ed8-c195-4844-99ea-3f788a5b42e5" class="bulleted-list"><li style="list-style-type:disc">「绝对安全」的概念最初由Shannon提出，且符合绝对安全的加密机制目前只有「一次性密码本（One-time Pad；OTP）」；<ul id="2716c5d1-0efe-4cb9-b772-a8d46ef6892f" class="bulleted-list"><li style="list-style-type:circle">「绝对安全」是指，一个攻击者（或称敌手，Adversary）在拿到由Alice发送给Bob的密文后，无法从中获得关于明文的任何信息（看了等于没看），换句话说，就是攻击者在已知密文信息的前提下破译出明文的概率（<strong>a posteriori likelihood</strong>）与直接破译明文的概率（<strong>a priori probability</strong>）没有什么不同。形式化定义为
+	<figure id="9d785052-fa08-498c-8db4-2859d25b5ecf" class="image"><a href="figures/0.png"><img style="width:432px" src="figures/0.png"/></a></figure>
+</li></ul><ul id="cf831d32-b98a-4ba3-b87e-8c4d4871e8e1" class="bulleted-list"><li style="list-style-type:circle">「绝对安全」的加密机制要求满足<span style="border-bottom:0.05em solid">柯克霍夫原则</span>（见本文最后的Note），即</li></ul></li></ul><ul id="3cd496fd-0b5c-4eb5-a201-4fee21f4d2d5" class="bulleted-list"><li style="list-style-type:disc">「计算安全」是指破译者在合理时间内无法成功破译密文。例如，某种密码的使用期限是3年，但破译者需要花费20年才能成功破译，则认为该加密机制是计算安全的；</li></ul><ul id="63a7f20a-69ce-4e60-b7ba-4684f6710971" class="bulleted-list"><li style="list-style-type:disc">「可证明安全」将证明加密机制的安全性归约（reduction）为求解某个困难问题（如利用已有信息破译一个密文）。实际证明的基本思想一般为：<ul id="c8817603-587b-4f08-acee-145058ecf682" class="bulleted-list"><li style="list-style-type:circle">第一，确定攻击模型，即假设攻击者永远什么样的能力，采取什么样的攻击策略，攻击步骤等；</li></ul><ul id="23070729-f12b-4168-a62e-dfe17d7cd244" class="bulleted-list"><li style="list-style-type:circle">第二，「挑战-应答」游戏。在这个游戏中，除了攻击者之外，还存在一个挑战者（可以想成是加密机制的设计者），两者形成了对抗关系。挑战者要做的就是遵循加密机制来响应攻击者的请求，以此证明“他”设计的加密机制是足够安全的。游戏的通用形式为：<ol type="1" id="59fef1a2-a5a0-42df-8a12-2c7128e72b59" class="numbered-list" start="1"><li>攻击者“提问（调用）”挑战者；</li></ol><ol type="1" id="d713e90d-ccfc-46cf-b6f1-95dbab29a297" class="numbered-list" start="2"><li>挑战者“回答（响应）”攻击者；</li></ol><ol type="1" id="bfd69800-4881-4c55-93c9-05e3579c5263" class="numbered-list" start="3"><li>攻击者向挑战者发起“攻击”：待攻击者认为收集了足够的信息后，挑战者向攻击者出示一个密文，由攻击者据此破译出明文。只要攻击者成功破译了明文中的一个字，便证明加密机制不安全。</li></ol></li></ul></li></ul><p id="6686ad1e-51ee-4bb2-8dcb-610a7e17b1eb" class="">可证明安全理论的一个典型实践就是「<mark class="highlight-orange"><strong>不可区分性游戏</strong></mark>」。我们首先从概念上理解什么是「绝对的不可区分性」，然后利用可证明安全理论，介绍「不可区分性游戏」是如何设计的，最后指出，如果通过不可区分性实验能够证明攻击者无法利用密文获得任何关于明文的信息，则认为该加密机制是可证明安全的。</p><ul id="6e207aeb-6af5-4388-b2e6-4005cffa14d7" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-orange"><strong>「绝对的不可区分：Perfect indistinguishability」</strong></mark></li></ul><div id="d317d5cf-ee2f-4696-a9a6-54c695857ab3" class="column-list"><div id="f67121a5-a888-4c6c-b0aa-e8f0e52b5bbe" style="width:50.000000000000014%" class="column"><p id="0531a633-9890-46a2-9347-5cfaee115283" class="">令 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">C</mi><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{C}(m)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> 表示一个定义在消息域 M 上的密文的随机分布（此分布取决于<strong>密钥选择的随机性 </strong><strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">K</mi></mrow><annotation encoding="application/x-tex">\mathcal{K}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal" style="margin-right:0.01445em;">K</span></span></span></span></span><span>﻿</span></span></strong><strong> </strong>以及<strong>加密算法的随机性 </strong><strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">M</mi></mrow><annotation encoding="application/x-tex">\mathcal{M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal">M</span></span></span></span></span><span>﻿</span></span></strong>）。</p><p id="fb50ed9c-1f07-4c74-8e9a-07acad039fc5" class="">所谓「perfect indistinguishability」，是指<strong>对消息域中的任意两个m0, m1，C(m0)和C(m1)的分布是相同的</strong>——即密文中不包含有关明文的信息（因为任何情况下密文的分布都是相同的）。</p></div><div id="653a2766-df7b-4a8d-a0b7-b9d3874d8779" style="width:50%" class="column"><figure id="8f2acd68-dc50-4ce4-9c6f-010e981a3981" class="image"><a href="figures/1.png"><img style="width:1212px" src="figures/1.png"/></a></figure></div></div><ul id="8f7dfc83-cad4-4abf-b026-defc123333ce" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-orange"><strong>不可区分性游戏/实验——「对抗的不可区分：Adversarial indistinguishability」</strong></mark></li></ul><div id="21936750-991f-452b-8b16-2185be913a6b" class="column-list"><div id="af54b8e2-cfec-40b9-9b77-e8391088c9b4" style="width:50%" class="column"><figure id="5355d80c-8be5-4e7e-991c-3781bb60294d" class="image"><a href="figures/2.png"><img style="width:1206px" src="figures/2.png"/></a></figure><figure id="1d1b8d86-3998-427b-9433-92c0071420e7" class="image"><a href="figures/3.png"><img style="width:1202px" src="figures/3.png"/></a></figure><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="e680ae68-d9dd-4f37-89a2-98462b18b4e6"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">也有文献称此游戏为 <strong>find-then-guess experiment </strong>[2]<strong>. </strong></div></figure><p id="1e7dc019-7c2b-4ab1-8c74-ba2d5f03a316" class="">
+</p></div><div id="bb3ce56d-d099-45fd-822b-a5351b5bf287" style="width:50%" class="column"><p id="6eb34734-41a6-482e-a646-8bb98c251813" class=""><strong>PrivKeav</strong>: 游戏的 setting 包括一个对称加密机制（private-key encryption schema Π=(Gen、Enc、Dec)）和一个攻击者（eavesdropping adversary A）。</p><p id="ebba8e1e-edc1-4cfe-a507-96ee0b0d55ec" class=""><strong>攻击模型</strong>：攻击者A除了不知道 key 和 b，可以假设具有关于对称加密机制的所有信息，如知道随机变量 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">K</mi><mo separator="true">,</mo><mi mathvariant="script">M</mi><mo separator="true">,</mo><mi mathvariant="script">C</mi></mrow><annotation encoding="application/x-tex">\mathcal{K},\mathcal{M},\mathcal{C}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathcal" style="margin-right:0.01445em;">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathcal">M</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathcal" style="margin-right:0.05834em;">C</span></span></span></span></span><span>﻿</span></span>的概率分布。只有 A 无法区分一个明文的加密和另一个明文的加密时，才能证明加密机制是「绝对安全」的。</p><p id="e2b21fc2-d843-424c-930e-ce27ef1906c3" class=""><strong>「挑战-应答」游戏</strong>：攻击者A选择两个长度相同的明文m0,m1发送给挑战者，挑战者任选其一进行加密，再将密文返回攻击者；攻击者对密文进行破译，判断这个密文的明文对应m0还是m1。</p><ul id="48444419-715d-40a1-9402-d6f1d7954c4a" class="bulleted-list"><li style="list-style-type:disc">如果A成功破译密文（b‘=b）的概率大于1/2，则说明这个加密机制Π是不安全的，反之则说明A没有获得任何关于明文的信息。（⚠️ 注意，安全并不意味着正确率为0，而是1/2，即和完全靠运气瞎猜的概率一样）<figure id="635d248b-a194-46d7-80a2-9222bff281c0" class="image"><a href="figures/4.png"><img style="width:1218px" src="figures/4.png"/></a></figure></li></ul></div></div><ul id="d8e3c310-e6ae-4d3f-ac54-e9c9012497b8" class="bulleted-list"><li style="list-style-type:disc"><strong>改进的不可区分性游戏</strong></li></ul><p id="babfb99b-4f36-47c1-a0cc-1a7017589514" class="">上个实验是挑战者拿到攻击者发来的两个明文m0,m1后，从中任选其一进行加密。为了更严谨，还可以根据挑战者的行为将游戏过程细分为两个实验：Experiment 0和Experiment 1。其中Exp0永远选择m0进行加密；Exp1永远选择m1进行加密。此时挑战者发给攻击者的便不再是某个密文，而是Exp0 或 Exp1；同样，攻击者不知道这个Experiment的编号是多少，需要根据其返回的密文进行猜测。</p><figure class="block-color-gray_background callout" style="white-space:pre-wrap;display:flex" id="d2478fb7-c2cd-47f0-ad27-2ad48f71f548"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%">此游戏也称为 <strong>Left-or-right experiment </strong>[2]。<strong>Left-or-right 与 find-then-guess 的区别在与：Left-or-right中攻击者</strong>A拿到某个Exp后可以与之进行多次交互，从而获得更多的信息，而 find-then-guess 的响应过程只由挑战者执行，如果挑战者无法做到及时响应，则攻击者的攻击难度便大大降低。
+
+除此之外，有没有感觉它分外眼熟？在DP分析adaptively composition analysis的时候，Dwork也引入了类似的experiment，用来分析组合机制的隐私性！后文我们会再次提到它。</div></figure><h1 id="dfb2c96d-7bbe-44c1-a536-fb8539d864fb" class="">由可证明安全到差分隐私</h1><p id="29a59ff8-9039-448e-8e12-2d1f623185ef" class="">在了解上述密码学背景之后，我们大胆揣摩下Dwork提出DP的思考过程，大概是遵循这样的逻辑：现代密码学中的可证明安全理论用「不可区分性」这个概念来描述一个<strong>加密机制</strong>对于任意明文的「安全性」，那么，我们可否套用类似的思想，来评估一个「隐私机制」对数据集中任意一条记录的「隐私性」呢？于是，<mark class="highlight-orange"><strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi></mrow><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ε</span></span></span></span></span><span>﻿</span></span></strong></mark><mark class="highlight-orange"><strong>-indistinguishability</strong></mark>的概念应运而生。对照着上面密码学的概念来看，其实就很容易理解了：<div class="indented"><ul id="f050b7aa-3d37-4c18-9eb0-0414f0f7b1e1" class="bulleted-list"><li style="list-style-type:disc">perfect secrecy → perfect privacy：「绝对安全」要求攻击者根据密文，无法得知关于明文更多的信息；那「绝对隐私」呢，就是要求「攻击者」无法从隐私机制的输出结果中获知被攻击对象的记录更多的信息。</li></ul><ul id="d866503b-51c7-4c87-a5c2-7a8785848073" class="bulleted-list"><li style="list-style-type:disc">encryption schema → statistical query / ML algorithm：在考虑「绝对安全」这个问题时，我们考虑的主体是一个加密算法；而在考虑「绝对隐私」时，主体则可以是一个统计查询函数（数据收集场景）或一个机器学习算法（机器学习场景）。（为简化描述，下文统一只使用「查询」来指代某个数据处理过程）</li></ul><ul id="ff4e123c-3996-4616-8941-be08c94d8e58" class="bulleted-list"><li style="list-style-type:disc">Kerckhoffs’s Principles → arbitrary background knowledge: 在考虑「绝对安全」时，为了满足柯克霍夫原则，假设攻击者知晓除密钥外的所有信息（如密钥、信息、密文的随机分布）；而在考虑「绝对隐私」时，同样假设攻击者具有最大背景知识，即知道除被攻击对象的记录外，数据集其他的所有数据信息。</li></ul><ul id="a9bffe95-7d14-4dd9-bd06-8f7c1c9e51cc" class="bulleted-list"><li style="list-style-type:disc">probabilistic algorithm: 上文提到，加密机制中，加密算法输出的密文服从特定的随机分布，且该随机分布取决于密钥选择的随机性 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">K</mi></mrow><annotation encoding="application/x-tex">\mathcal{K}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal" style="margin-right:0.01445em;">K</span></span></span></span></span><span>﻿</span></span> 以及加密算法的随机性 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">M</mi></mrow><annotation encoding="application/x-tex">\mathcal{M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal">M</span></span></span></span></span><span>﻿</span></span>；实现隐私保护同样需让隐私机制的输出结果具有一定的随机性，否则将毫无意义。</li></ul></div></p><p id="0e6b87a9-7e49-4b64-beb2-212430260d89" class="">综上所述，我们便可以说，如果一个具有任意背景知识的攻击者，从一个隐私机制的输出结果中无法获知被攻击对象的记录更多的信息，便称此隐私机制具有「<strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi></mrow><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ε</span></span></span></span></span><span>﻿</span></span></strong><strong>-不可区分性</strong>」。当攻击者具有最大背景知识时，这种针对明文发起的攻击，在密码学中也称为「差分攻击」，是故「<strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi></mrow><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ε</span></span></span></span></span><span>﻿</span></span></strong><strong>-不可区分性</strong>」也改成了「<strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ε</mi></mrow><annotation encoding="application/x-tex">\varepsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">ε</span></span></span></span></span><span>﻿</span></span></strong><strong>-差分隐私</strong>」。（其实也是为了与密码学里已有的<strong>不可区分性</strong>概念加以区分，否则很容易让读者想到一起，从而让这个方法的“新颖性”大大降低）</p><h1 id="6a077fe9-a985-4c07-83cb-80bfd2401628" class="">拓展：DP自适应组合理论——k重组合定理</h1><p id="b8be96de-8140-46ff-94a9-e5a592d92e5e" class="">我们在介绍不可区分性游戏中提到，Dwork在其关于差分隐私组合理论研究工作[8]中引入了与之类似的experiment，用来分析组合机制的隐私性，称为「<strong>k重组合实验（k-fold composition experiment*）</strong>」，流程如下：</p><div id="119adf25-a617-400f-81a2-43e8b593fbb9" class="column-list"><div id="f560d6b2-a04b-4767-9484-ad8d9e1f2dcc" style="width:50%" class="column"><figure id="aca56b5c-66db-4f44-b766-0e4451bc405f" class="image"><a href="figures/5.png"><img style="width:432px" src="figures/5.png"/></a></figure><p id="840c9171-efeb-4600-a51b-573a2a2dab49" class="">（有了上述<strong>Left-or-right experiment</strong>的基础，理解起这个来想必就很容易了。）</p><p id="3209bce2-8994-4e7c-beb9-91fb79a665ff" class="">
+</p></div><div id="56597e9d-11f4-4c4d-bf72-ddea04e82281" style="width:50%" class="column"><p id="9512cd0f-25c1-438a-9f48-21f529d4578c" class=""><strong>k-fold Composition</strong>: 游戏 setting 包括<code>k</code>个DP机制<code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">M</mi><mi>i</mi></msub><mo>∈</mo><mi mathvariant="double-struck">M</mi></mrow><annotation encoding="application/x-tex">\mathcal{M}_i\in\mathbb{M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68889em;vertical-align:0em;"></span><span class="mord mathbb">M</span></span></span></span></span><span>﻿</span></span></code> 和两个实验 Exp 0 和 Exp 1。参考 left-or-right experiment，Exp 0 / Exp 1 各自选择数据集 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">x_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> / <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">x_1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.58056em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> 作为DP机制的输入数据。挑战者随机选择Exp 0或Exp 1发给攻击者<code>A</code>，然后攻击者执行以下实验步骤：</p><ul id="558416ca-436e-4897-b8db-c274423d6623" class="bulleted-list"><li style="list-style-type:disc">A 选择两个相邻数据集<style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>x</mi><mn>0</mn><mi>i</mi></msubsup><mo separator="true">,</mo><msubsup><mi>x</mi><mn>1</mn><mi>i</mi></msubsup></mrow><annotation encoding="application/x-tex">x_0^i,x_1^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0727719999999998em;vertical-align:-0.24810799999999997em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-2.4518920000000004em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-2.4518920000000004em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>（其中被攻击目标Bob的记录在<style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>x</mi><mn>0</mn><mi>i</mi></msubsup></mrow><annotation encoding="application/x-tex">x_0^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0727719999999998em;vertical-align:-0.24810799999999997em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-2.4518920000000004em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.24810799999999997em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>中），传给机制<code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">M</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\mathcal{M}_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></code>；</li></ul><ul id="74b3a4de-8d76-44af-aaea-2553d34796dc" class="bulleted-list"><li style="list-style-type:disc"><code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="script">M</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\mathcal{M}_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathcal">M</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></code>输出在特定数据集上的查询结果，并返回给 A；</li></ul><p id="58044da1-ca33-45f4-bc57-34ad3c28733b" class="">由此经过k个机制后，攻击者便得到了 k个机制的输出结果<code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msub><mi>y</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>y</mi><mi>k</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(y_1,\dots,y_k)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></code>。</p></div></div><div id="e7645650-219e-4c24-9f8a-a4c314c050fa" class="column-list"><div id="409ce851-186b-4ac3-ad4f-b6dcbb6ea2f2" style="width:50%" class="column"><figure id="96fc584c-3a74-42d5-9b75-ecbc4d35dc53" class="image"><a href="figures/6.png"><img style="width:432px" src="figures/6.png"/></a></figure></div><div id="8c002695-2b95-49f6-96b9-73f89eb82512" style="width:50.000000000000014%" class="column"><p id="0d9e668f-4a61-4d02-bb73-ba191978a82f" class=""><strong>k重组合下的隐私保证</strong>：直观上，我们称Bob在上述k重组合实验中能够保证隐私，当且仅当攻击者无法根据k个输出结果及其拥有的背景知识，正确推测出他进行的是哪个实验（也就是b的值）。形式化定义如右图所示。</p><p id="0bbfb19c-5d41-4363-adc4-21c0cefa65a3" class="">其中，<code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>V</mi><mn>0</mn></msup></mrow><annotation encoding="application/x-tex">V^0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></code>和<code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>V</mi><mn>1</mn></msup></mrow><annotation encoding="application/x-tex">V^1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></code>分别表示攻击者A在不同实验中所拥有的信息——view（视图），这个信息既包括此前提到的k个机制的输出结果<code><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><msub><mi>y</mi><mn>1</mn></msub><mo separator="true">,</mo><mo>…</mo><mo separator="true">,</mo><msub><mi>y</mi><mi>k</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(y_1,\dots,y_k)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span></code>，还包括它具有的最大背景知识（正如「绝对安全」中假设攻击者知晓密钥、信息、密文的随机分布，这里也可以假设攻击者知道数据和算法的随机性）。</p></div></div><h1 id="e9e0ea2f-0f33-4587-a8b5-f6b28c8e76af" class="">Future Work…</h1><p id="cc7c811c-788a-484e-8014-7543f2f642c7" class="">综上，（我觉得）差分隐私的前世便讲完了。说起差分隐私的今生，那能讲的可就多了去了，从统计分析领域到机器学习，从中心化差分到本地差分，从隐私组合到隐私放大。感觉真的画了一个好大的饼。慢慢来吧哈哈哈，不追求全覆盖，只要把看过的都理解扎实就好。</p><p id="a3938211-5427-467f-ae13-4394b9609d43" class="">如果大家还有其他问题我没有涉及到，欢迎评论区留言，一起交流一下吧～</p><p id="24165917-1bd4-41b7-adf2-61a8d5f01099" class="">
+</p><p id="ca645e2b-928a-457c-9f82-a9fbdd818025" class="">References:</p><p id="fba0eca0-5a82-4a53-b1b6-266cb5c02c3b" class="">[1] Introduction_to_Modern_Cryptography</p><p id="ed489a14-ae15-436e-ad2f-0dceb540afde" class="">[2] <a href="http://staff.ustc.edu.cn/~sycheng/sst/lectures/ch01_Introduction_of_Information_Security.pdf">http://staff.ustc.edu.cn/~sycheng/sst/lectures/ch01_Introduction_of_Information_Security.pdf</a></p><p id="e8e33e06-8076-45b5-8528-79659b1693f7" class="">[3] <a href="https://www.cnblogs.com/max1z/p/15992505.html#%E5%8F%82%E8%80%83">https://www.cnblogs.com/max1z/p/15992505.html#参考</a></p><p id="34c1e7e4-0769-4703-8b3b-f6f827ac06fe" class="">[4] 贾春福，高敏芬等 [译]，《计算机安全：原理与实践》，机械工业出版社。</p><p id="01a3172f-3582-4576-af11-db0cc54259ff" class="">[5] 雷敏，杨义先，《应用密码学》，北京邮电大学出版社。</p><p id="94b8266f-1f2e-49ee-8c1b-ae0cbcfe2c60" class="">[6] 张薇，魏悦川，《密码学基础》，西安电子科技大学出版社。</p><p id="434fd766-67ea-407b-8f3d-0a6212651c1f" class="">[7] <a href="https://www.cnblogs.com/pam-sh/p/15244862.html">https://www.cnblogs.com/pam-sh/p/15244862.html</a></p><p id="bd92c5e6-44e0-46f3-921a-135e2573d81e" class="">[8] C. Dwork, G. N. Rothblum, and S. Vadhan, “Boosting and differential privacy,” in <em>FOCS</em>, 2010, pp. 51–60.</p><p id="1ff77e41-353d-4105-a931-b31b508abe1d" class="">
+</p><p id="eb1ba392-f5a0-4cb0-9672-c29d57bd26ab" class="">Notes:</p><ul id="61d0b90d-e440-4223-aecd-eeb7adef6e23" class="bulleted-list"><li style="list-style-type:disc">从某种意义上讲，密码学也是研究「消息变换」方法的一门学科。密码算法就是各种变换方法。将有意义的明文信息按照<strong>一组变换（编码）规则</strong>变换为密文信息的过程就称为「加密 Encryption」，这组变换规则就称为「加密算法」。授权用户使用一组变换规则将非授权者读不懂的密文变换成能看懂的明文信息的过程称为「解密 Decryption」，这组变换规则称为「解密算法」。加解密运算通常都是在一组「密钥key」控制下进行的，包括「加密密钥」、「解密密钥」、「签名密钥」、「验证密钥」等。一般来说，密钥可以是一串特定的字符串，密钥越长，生成的密文破解难度就越大 [5]。</li></ul><ul id="8155d645-59d1-4365-959f-d8e8c6dfd2c9" class="bulleted-list"><li style="list-style-type:disc">A scheme can be said to be computationally secure if it cannot be cracked in &#x27;reasonable time&#x27;</li></ul><ul id="8f30535b-4046-40c6-992e-98b2ceb8dc24" class="bulleted-list"><li style="list-style-type:disc">可证明安全性是指，安全方案或协议的安全性可以被“证明”，但用“证明”一词并不十分恰当，甚至有些误导[1]。</li></ul><ul id="8e9e293b-3b13-4d00-930d-dfd978384e63" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-teal">privacy-key encryption[1]：私钥加密，又称「对称密钥」（symmetric-key）加密、单钥加密。顾名思义，「对称」就是说加密算法和解密算法使用的密钥K是相同的（或实质上等同）。对称加密的有点是保密强度高、计算速度快；缺点在与密钥必须通过安全可靠的途径传输（如在军事中是通过人肉传输的），因此密钥管理称为影响系统安全性的关键因素。</mark>虽然这种加密过程最经典，但其弊端也大大限制了这个方法的应用场景。而之后提出的非对称加密，即加密算法和解密算法使用不同的密钥，有效地解决了这个问题。<figure id="1ec182ef-9885-4620-9514-049cc2bceb78" class="image"><a href="figures/7.png"><img style="width:384px" src="figures/7.png"/></a></figure></li></ul><ul id="5c6a2482-890d-4370-af5f-b8cb1cb5cea4" class="bulleted-list"><li style="list-style-type:disc">A private-key encryption scheme[1]：对称加密机制，也称cipher。包含以下3个算法<ul id="5546cac6-f10f-4d28-af1c-f302cb099236" class="bulleted-list"><li style="list-style-type:circle"><em>key-generation algorithm</em> <strong>Gen</strong>：依照某种特定的随机分布，输出一个 key；</li></ul><ul id="dbe79b5e-b4c5-4430-bff3-bbf1586492cd" class="bulleted-list"><li style="list-style-type:circle"><em>encryption algorithm</em> <strong>Enc_k(m)</strong>：输入key和明文m，输出密文c；</li></ul><ul id="b32ac6ed-ac64-493a-a172-517c0978f816" class="bulleted-list"><li style="list-style-type:circle"><em>decryption algorithm</em> <strong>Dec_k(c)</strong>：输入key和密文c，输出明文m</li></ul></li></ul><ul id="f61330d9-8e45-47be-9b0b-c99b876e4dab" class="bulleted-list"><li style="list-style-type:disc"><strong>Kerckhoffs’s Principles 柯克霍夫原则[1]：</strong>“密码方法本身不需要一定是秘密的，而且它必须能被敌人轻易得到。” 也就是说，我们要隐藏的是密钥key而不应是加密方案。<blockquote id="f8a4c005-832d-4615-bd03-68da303a27ef" class="">Kerckhoffs’ intention was that an encryption scheme should be designed so as to be secure <em>even if an adversary knows the details of </em><span style="border-bottom:0.05em solid"><em>all the component algorithms of the scheme</em></span>, as long as the adversary doesn’t know the key being used.
+
+“The cipher method must not be required to be secret, and it must be able to fall into the hands of the enemy without inconvenience.”</blockquote></li></ul><ul id="7f71167b-ef78-476e-8e84-99230c911ec1" class="bulleted-list"><li style="list-style-type:disc">对称加密机制中存在3种不同的「随机性」[1]：<ul id="4f75d5a4-bda3-4bd3-af76-16e3073d1df7" class="bulleted-list"><li style="list-style-type:circle">定义在密钥集合上的随机变量 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">K</mi></mrow><annotation encoding="application/x-tex">\mathcal{K}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal" style="margin-right:0.01445em;">K</span></span></span></span></span><span>﻿</span></span>：For k ∈ K, we let Pr[K = k] denote the probability that the key output by Gen is equal to k. (Formally, K is a random variable denoting the value of the key.)</li></ul><ul id="f8fa6ef8-4a95-44d8-a011-f7f1b05a4649" class="bulleted-list"><li style="list-style-type:circle">定义在消息集合上的随机变量 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">M</mi></mrow><annotation encoding="application/x-tex">\mathcal{M}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal">M</span></span></span></span></span><span>﻿</span></span>：for m ∈ M we let Pr[M = m] denote the probability that the message that is sent is equal to m. 引入这个随机变量是考虑到消息集合中的每个m（如attack tomorrow/don&#x27;t attack）可能具有不同的发送概率。如果发送某个消息不是随机事件，而是一个确定事件，不久意味着攻击者能够知道这个明文m是什么，加密过程就没有任何意义了不是么。</li></ul><ul id="f92e51c8-bc10-42fc-b4c2-8eaf78b9b3b9" class="bulleted-list"><li style="list-style-type:circle">定义在密文集合上的随机变量 <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="script">C</mi></mrow><annotation encoding="application/x-tex">\mathcal{C}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathcal" style="margin-right:0.05834em;">C</span></span></span></span></span><span>﻿</span></span>：For c ∈ C, we write Pr[C = c] to denote the probability that the ciphertext is c. Note that, given Enc, the distribution over C is fixed by the distributions over K and M.</li></ul></li></ul><ul id="31d913d2-452d-446d-b9fd-c252c9cf5074" class="bulleted-list"><li style="list-style-type:disc">在密码理论领域的论文中，安全模型通常对应的是Game、Experiment、Image、Procedure等概念[3]。</li></ul><ul id="3b3605d3-6fe3-4f3d-97b6-155e2bca7db6" class="bulleted-list"><li style="list-style-type:disc">「数据机密」和「隐私」还是存在着一定的区别[4]：后者更强调<strong>个人的主观能动性。</strong><ul id="743dd5f4-5cbf-4e34-8167-f5c562d63d52" class="bulleted-list"><li style="list-style-type:circle"><strong>数据机密性</strong>：指确保隐私或机密信息不被非授权的个人所使用，或被泄露给非授权的个人；</li></ul><ul id="9cbe9880-ae56-456e-96a3-7f569ea3522b" class="bulleted-list"><li style="list-style-type:circle"><strong>隐私性</strong>：指确保个人能够控制或影响与自身相关的信息的收集和存储，也能够控制这些信息可以由谁披露或向谁披露。</li></ul></li></ul><ul id="551cc2c8-2f9d-422a-b13c-a1b559e6baa7" class="bulleted-list"><li style="list-style-type:disc">补充回顾：</li></ul><div id="0b3d9e8e-8697-4809-95c1-e33ef51f8d8d" class="column-list"><div id="e87277de-d435-42a3-b9b4-3cc0968fe1a3" style="width:50%" class="column"><figure id="fc83da03-4a01-4fd6-b6a6-cd4ff41b3acc" class="image"><a href="figures/8.png"><img style="width:432px" src="figures/8.png"/></a></figure></div><div id="5e42d1b0-bcb1-4683-8454-6f6dd0dc968a" style="width:50%" class="column"><figure id="21485807-c1b3-46c3-b387-d42df6406275" class="image"><a href="figures/9.png"><img style="width:432px" src="figures/9.png"/></a></figure></div></div></div></article></body></html>
